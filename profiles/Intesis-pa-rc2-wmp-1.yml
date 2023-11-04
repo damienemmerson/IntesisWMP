@@ -1,0 +1,21 @@
+name: Intesis-pa-rc2-wmp-1
+components:
+- id: main
+  capabilities:
+  - id: switch
+    version: 1
+  - id: temperatureMeasurement
+    version: 1
+  - id: thermostatCoolingSetpoint
+    version: 1
+  - id: fanSpeed
+    version: 1
+  - id: thermostatMode
+    version: 1
+  - id: refresh
+    version: 1
+  categories:
+  - name: Thermostat
+metadata:
+  mnmn: SmartThingsCommunity
+  vid: a975374a-770c-3967-9178-4e21ebdde2ef
