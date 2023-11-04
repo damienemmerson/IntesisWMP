@@ -16,6 +16,7 @@ local discovery = {}
 function discovery.handle_discovery(driver, _should_continue)
   log.info("Starting Discovery")
 
+  local udp = socket.udp()
   local metadata = {
     type = config.DEVICE_TYPE,
     -- the DNI must be unique across your hub, using static ID here so that we
