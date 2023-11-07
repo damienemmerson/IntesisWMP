@@ -16,6 +16,17 @@ components:
     version: 1
   categories:
   - name: Thermostat
+preferences:
+  - title: "Intesis Intefrace IP Address"
+    name: ipAddress
+    description: "Set the IP address of the Intesis Interface"
+    required: true
+    preferenceType: string
+    definition:
+      stringType: text
+      minLength: 7
+      maxLength: 15
+      default: "0.0.0.0"
 metadata:
   mnmn: SmartThingsCommunity
   vid: a975374a-770c-3967-9178-4e21ebdde2ef

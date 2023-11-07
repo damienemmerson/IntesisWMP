@@ -12,43 +12,41 @@ local config = require('config')
 -- Client functions
 -----------------------------------------------------------------
 
-local hub_server = {}
+local client = {}
 
 -- Connect to Intesis device
-function hub_server.tcpConnect(driver, device)
+function client.tcpConnect(driver, device)
 
-  local ip = config.DEVICE_IP
+  --local ip = config.DEVICE_IP
+  local ipAddress = device.preferences.ipAddress
   local port = config.DEVICE_PORT
 
   -- Create TCP object
   tcpClient = socket.tcp()
 
   -- Connect to Intesis Device
-  while true do
-    local res, err = tcpClient:connect(ip, port)
+ 
+    log.trace("Connecting to "..ipAddress.." on port "..port)
+    local res, err = tcpClient:connect(ipAddress, port)
     -- Handle timeout errors
     if err == "timeout" then
       log.trace("Connection attempt timed out")
       -- The second argument here is the "sender" position
       socket.select({}, {tcpClient})
-      res, err = tcpClient:connect(ip, port)
+      res, err = tcpClient:connect(ipAddress, port)
     end
     -- Handle successful connection
     if res then
       log.trace("Connected to Intesis device")
       -- Register socket to receive data
-      hub_server.tcpReceive(driver, device)
-      break
-    else
-      log.trace("Failed to connect. Retrying in 10 seconds.")
-      socket.sleep(10)
+      client.tcpReceive(driver, device)
     end
   end
-end
+
 
 
 -- Receive data
-function hub_server.tcpReceive(driver, device)
+function client.tcpReceive(driver, device)
   log.info("Registering socket and preparing to receive data")
   device.thread:register_socket(
   tcpClient,
@@ -57,18 +55,18 @@ function hub_server.tcpReceive(driver, device)
     if data then
       log.trace("Received data: "..data)
       -- Handle the received data
-      hub_server.handleData(driver, device, data)
+      client.handleData(driver, device, data)
     elseif status then
       log.trace("Error in receiving data: "..status)
     end
    end,
    'tcpReceive')
-
+   device:online()
 end
 
 
 -- Send commands to Intesis device
-function hub_server.sendCommand(driver, device, payload)  
+function client.sendCommand(driver, device, payload)
   log.trace("Sending command: "..payload)
   local res, status = tcpClient:send(payload)
 
@@ -78,20 +76,25 @@ function hub_server.sendCommand(driver, device, payload)
 
   if status then
     log.trace("Socket error: "..status)
-    -- Shut down socket gracefully
+    
+    log.trace("Shutting down socket gracefully")
     device.thread:unregister_socket(tcpClient)
+    
+    log.trace("Closing TCP Connection")
     tcpClient:close()
-    -- Device now offline
-    device.offline()
-    -- Try to reconnect
-    hub_server.tcpConnect(driver, device)
+    
+    log.trace("Device is now offline")
+    device:offline()
+    
+    log.trace("Trying to reconnect")
+    client.tcpConnect(driver, device)
   end
 
 end
 
 
 -- Handle received data
-function hub_server.handleData(driver, device, data)
+function client.handleData(driver, device, data)
  
   local cmd, acNum, func, value = string.match(data, "(%a+),(%d+):(%a+),(%w+)")
  
@@ -137,4 +140,4 @@ function hub_server.handleData(driver, device, data)
   end
 end
 
-return hub_server
+return client

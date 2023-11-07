@@ -18,9 +18,12 @@ local lifecycles = {}
 function lifecycles.init(driver, device)
   log.info("[" .. device.id .. "] Initializing device")
   
-  -- Connect to the Intesis device
-  client.tcpConnect(driver, device)
-
+  if device.preferences.ipAddress ~= "0.0.0.0" then
+    -- Connect to Intesis Interface
+    client.tcpConnect(driver, device)
+    -- Refresh the device to get the state for each capability attribute
+    commands.handle_refresh(driver, device)
+  end
   -- Set connection keepalive schedule
   device.thread:call_on_schedule(
     config.SCHEDULE_PERIOD,
@@ -29,14 +32,10 @@ function lifecycles.init(driver, device)
     end,
     'keepalive')
 
-  -- Refresh the device to get the state for each capability attribute
-  commands.handle_refresh(driver, device)
-
   -- Can't seem to get this to work in device config
   device:emit_event(caps.thermostatMode.supportedThermostatModes({"auto", "cool", "fanonly", "heat", "dryair"}))
-
-  -- Mark device as online so it can be controlled from the app
-  device:online()
+  -- The device isn't online until the IP adress is configured in preferences
+  device:offline()
 end
 
 
@@ -53,6 +52,27 @@ end
 function lifecycles.removed(_, device)
   log.info("[" .. device.id .. "] Removing device")
 
+end
+
+
+function lifecycles.infoChanged(driver, device, event, args)
+ 
+  if args.old_st_store.preferences.ipAddress ~= device.preferences.ipAddress then
+      
+    -- If the IP address changes the interface is offline until successfully connected again
+    log.trace("Shutting down socket gracefully")
+    device.thread:unregister_socket(tcpClient)
+    log.trace("Closing TCP Connection")
+    tcpClient:close()
+    log.trace("Device is now offline")
+    device:offline()
+    
+    -- Connect to the Intesis Interface
+    client.tcpConnect(driver, device)
+
+    -- Refresh the device to get the state for each capability attribute
+    commands.handle_refresh(driver, device)
+  end
 end
 
 return lifecycles

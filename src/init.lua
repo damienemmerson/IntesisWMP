@@ -12,9 +12,9 @@ local lifecycles = require('lifecycles')
 -- Create the driver object
 local driver =
   driver(
-    'LAN-Thermostat',
+    'LAN-IntesisInterface',
     {
-      discovery = discovery.handle_discovery,
+      discovery = discovery.start,
       lifecycle_handlers = lifecycles,
       supported_capabilities = {
         caps.switch,

@@ -17,7 +17,7 @@ local commands = {}
 function commands.handle_onoff(driver, device, command)
    -- Prepare the payload
   local onoff = command.command
-  local payload =  "SET,"..config.AC_NUMBER..":onoff,"..onoff.."\n"
+  local payload =  "SET,"..config.AC_NUMBER..":onoff,"..onoff.."\r"
 
   -- Send the payload to Intesis device
   log.trace("Sending payload: "..payload)
@@ -29,7 +29,7 @@ end
 function commands.handle_setCoolingSetpoint(driver, device, command)
   -- Prepare the payload
   local setptemp = command.args.setpoint * 10
-  local payload =  "SET,"..config.AC_NUMBER..":setptemp,"..setptemp.."\n"
+  local payload =  "SET,"..config.AC_NUMBER..":setptemp,"..setptemp.."\r"
   
   -- Send the payload to Intesis device
   log.trace("Sending payload: "..payload)
@@ -44,7 +44,7 @@ function commands.handle_setFanSpeed(driver, device, command)
   if speed == '0' then
     speed = "AUTO"
   end
-  local payload =  "SET,"..config.AC_NUMBER..":fansp,"..speed.."\n"
+  local payload =  "SET,"..config.AC_NUMBER..":fansp,"..speed.."\r"
   
   -- Send the payload to Intesis device
   log.trace("Sending payload: "..payload)
@@ -61,7 +61,7 @@ function commands.handle_setThermostatMode(driver, device, command)
   elseif mode == 'fanonly' then
     mode = "FAN"
   end
-  local payload =  "SET,"..config.AC_NUMBER..":mode,"..mode.."\n"
+  local payload =  "SET,"..config.AC_NUMBER..":mode,"..mode.."\r"
   
   -- Send the payload to Intesis device
   log.trace("sending payload: "..payload)
@@ -72,11 +72,11 @@ end
 -- Refresh command
 function commands.handle_refresh(driver, device)
 
-  client.sendCommand(driver, device, "GET,1:ONOFF\n")
-  client.sendCommand(driver, device, "GET,1:MODE\n")
-  client.sendCommand(driver, device,"GET,1:AMBTEMP\n")
-  client.sendCommand(driver, device, "GET,1:SETPTEMP\n")
-  client.sendCommand(driver, device,"GET,1:FANSP\n")
+  client.sendCommand(driver, device, "GET,1:ONOFF\r")
+  client.sendCommand(driver, device, "GET,1:MODE\r")
+  client.sendCommand(driver, device,"GET,1:AMBTEMP\r")
+  client.sendCommand(driver, device, "GET,1:SETPTEMP\r")
+  client.sendCommand(driver, device,"GET,1:FANSP\r")
   
 end 
 
