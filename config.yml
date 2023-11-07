@@ -1,5 +1,5 @@
-name: 'LAN Thermostat'
-packageKey: 'LAN-Thermostat'
+name: 'ST-Edge-IntesisInterface'
+packageKey: 'ST-Edge-IntesisInterface'
 permissions:
   lan: {}
   discovery: {}
