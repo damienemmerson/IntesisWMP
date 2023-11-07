@@ -2,6 +2,4 @@
     "Lua.diagnostics.globals": [
         "tcpClient"
     ],
-    "luahelper.base.formatErrShow": true,
-    "luahelper.format.keep_simple_function_one_line": true
 }

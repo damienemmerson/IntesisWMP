@@ -60,12 +60,12 @@ function lifecycles.infoChanged(driver, device, event, args)
   if args.old_st_store.preferences.ipAddress ~= device.preferences.ipAddress then
       
     -- If the IP address changes the interface is offline until successfully connected again
-    log.trace("Shutting down socket gracefully")
+    --[[ log.trace("Shutting down socket gracefully")
     device.thread:unregister_socket(tcpClient)
     log.trace("Closing TCP Connection")
     tcpClient:close()
     log.trace("Device is now offline")
-    device:offline()
+    device:offline() ]]
     
     -- Connect to the Intesis Interface
     client.tcpConnect(driver, device)
