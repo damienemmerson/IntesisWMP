@@ -1,4 +1,6 @@
 {
+    "mnmn": "SmartThingsCommunity",
+    "vid": "7b254f40-0be6-3fac-8c38-1e6e745b6f77",
     "version": "0.0.1",
     "type": "profile",
     "dashboard": {
@@ -130,14 +132,14 @@
                 "operator": "EQUALS",
                 "operand": "on"
             },
-            "values":[
+            "values": [
                 {
                     "key": "thermostatMode.value",
-                    "enabledValues":[
-                    "auto",
-                    "cool",
-                    "dryair",
-                    "heat"
+                    "enabledValues": [
+                        "auto",
+                        "cool",
+                        "dryair",
+                        "heat"
                     ]
                 }
             ],
@@ -382,5 +384,7 @@
                 "exclusion": []
             }
         ]
-    }
+    },
+    "presentationId": "7b254f40-0be6-3fac-8c38-1e6e745b6f77",
+    "manufacturerName": "SmartThingsCommunity"
 }
